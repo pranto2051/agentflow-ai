@@ -63,6 +63,13 @@ export function useUserSettings() {
     return res.json();
   };
 
+  const updateSettings = async (payload: any) => {
+    if (payload.profile) return updateProfile(payload.profile);
+    if (payload.memory) return saveMemory(payload.memory);
+    // Handle other types as needed
+    return null;
+  };
+
   return {
     settings: data,
     isLoading,
@@ -72,6 +79,7 @@ export function useUserSettings() {
     uploadAvatar,
     changePassword,
     deleteAccount,
-    saveMemory
+    saveMemory,
+    updateSettings
   };
 }

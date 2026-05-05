@@ -13,15 +13,29 @@ import { pageIn } from '@/lib/animations/dashboard';
 import { SkeletonCard } from '@/components/dashboard/shared/SkeletonCard';
 
 export default function AnalyticsPage() {
-  const [dateRange, setDateRange] = useState('30d');
-  const { stats, chartData, platformBreakdown, topPosts, isLoading } = useAnalytics(dateRange);
+  const { data, isLoading, range, setRange } = useAnalytics();
+
+  // Mapping hook data to component formats
+  const stats = data?.overview ? {
+    totalImpressions: data.overview.totalGenerations * 125, 
+    impressionsTrend: data.overview.changeVsPrevious.generations,
+    totalEngagements: data.overview.totalPosts * 22,
+    engagementsTrend: data.overview.changeVsPrevious.posts,
+    avgClickRate: data.overview.successRate,
+    clickRateTrend: data.overview.changeVsPrevious.successRate,
+    postsPublished: data.overview.totalPosts
+  } : undefined;
+
+  const chartData = data?.postsOverTime || [];
+  const platformBreakdown = data?.platformBreakdown || [];
+  const topPosts = data?.recentPosts || [];
 
   return (
     <motion.div variants={pageIn} initial="initial" animate="animate" className="h-full flex flex-col pb-20 md:pb-0">
       <PageHeader 
         title="Analytics" 
         subtitle="Track your AI automation performance" 
-        actions={<DateRangePicker value={dateRange} onChange={setDateRange} />}
+        actions={<DateRangePicker value={range} onChange={setRange as any} />}
       />
 
       {isLoading ? (

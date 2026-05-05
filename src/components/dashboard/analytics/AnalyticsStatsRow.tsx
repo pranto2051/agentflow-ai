@@ -7,7 +7,7 @@ import { Eye, ThumbsUp, MessageSquare, Share2, TrendingUp, TrendingDown } from '
 import { StatCard } from '@/components/dashboard/shared/StatCard';
 
 interface AnalyticsStatsRowProps {
-  stats: {
+  stats?: {
     totalImpressions: number;
     impressionsTrend: number;
     totalEngagements: number;
