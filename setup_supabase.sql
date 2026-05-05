@@ -169,3 +169,27 @@ ALTER TABLE public.admin_settings ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Admins manage settings" ON public.admin_settings FOR ALL USING (public.is_admin());
 -- Public can view some settings if needed (or keep it admin only)
 CREATE POLICY "Users view public settings" ON public.admin_settings FOR SELECT USING (true);
+
+-- =====================
+-- ADMIN ACCOUNTS (Specific Admin Login & Profile Data)
+-- =====================
+CREATE TABLE IF NOT EXISTS public.admin_accounts (
+  id UUID REFERENCES public.profiles(id) ON DELETE CASCADE PRIMARY KEY,
+  first_name TEXT,
+  last_name TEXT,
+  username TEXT UNIQUE NOT NULL,
+  email TEXT UNIQUE NOT NULL,
+  password_hash TEXT, -- Usually handled by auth.users, but stored here per request
+  phone_number TEXT,
+  profile_photo_url TEXT,
+  is_super_admin BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Enable RLS
+ALTER TABLE public.admin_accounts ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Only admins can access this sensitive information
+CREATE POLICY "Admins manage admin_accounts" ON public.admin_accounts FOR ALL USING (public.is_admin());
+
