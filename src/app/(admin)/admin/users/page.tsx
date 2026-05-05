@@ -5,34 +5,57 @@ import UsersTable from "@/components/admin/UsersTable";
 import { Search, UserPlus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import userData from "@/store/Data/userdata.json";
-import adminData from "@/store/Data/admindata.json";
+import { createClient } from "@/lib/supabase/client";
+import { toast } from "sonner";
+import { useEffect } from "react";
 
 interface User {
   id: string;
-  name: string;
+  full_name: string;
   email: string;
   role: string;
   status: string;
-  joined_at: string;
+  created_at: string;
 }
 
 export default function AdminUsersPage() {
-  const initialUsers: User[] = [
-    ...adminData.map(a => ({ 
-      ...a, 
-      status: "active",
-      joined_at: a.last_login || new Date().toISOString() 
-    })),
-    ...userData
-  ];
-
-  const [users] = useState<User[]>(initialUsers);
+  const [users, setUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const supabase = createClient();
+
+  useEffect(() => {
+    async function loadUsers() {
+      setIsLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("id, full_name, role, status, created_at");
+
+        if (error) throw error;
+        
+        // Profiles don't have email directly in this schema, 
+        // they are linked by ID. For now we just use a placeholder 
+        // or join if needed.
+        const usersWithEmail = (data || []).map(p => ({
+          ...p,
+          email: "User " + p.id.slice(0, 5) // Placeholder since email is in auth schema
+        }));
+
+        setUsers(usersWithEmail as User[]);
+      } catch (err) {
+        console.error("Error loading users:", err);
+        toast.error("Failed to load users from database");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadUsers();
+  }, [supabase]);
 
   const filteredUsers = users.filter(user => 
-    user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchQuery.toLowerCase())
+    (user.full_name?.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (user.email?.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   return (

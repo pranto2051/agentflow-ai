@@ -24,7 +24,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
-import taskDemoData from "@/store/Data/taskdata.json";
 
 interface Task {
   id: string;
@@ -57,17 +56,15 @@ export default function TasksPage() {
         if (!isMounted) return;
 
         if (error) {
-          console.warn("Supabase fetch error, using demo data:", error.message);
-          setTasks(taskDemoData as Task[]);
-          toast.info("Showing demo task data");
+          console.warn("Supabase fetch error:", error.message);
+          setTasks([]);
         } else {
           setTasks((data as Task[]) || []);
         }
       } catch (err) {
         if (isMounted) {
-          console.warn("Fetch failed, using demo data:", err);
-          setTasks(taskDemoData as Task[]);
-          toast.info("Showing demo task data (Offline)");
+          console.warn("Fetch failed:", err);
+          setTasks([]);
         }
       } finally {
         if (isMounted) setIsLoading(false);

@@ -20,8 +20,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import userLoginData from "@/store/Data/userlogin.json";
-import adminLoginData from "@/store/Data/adminlogin.json";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -49,50 +47,36 @@ export default function LoginPage() {
 
     console.log("Attempting login for:", email);
 
-    // 1. Check Demo Data FIRST
-    const allDemoLogins = [...userLoginData, ...adminLoginData];
-    const foundUser = allDemoLogins.find(
-      (u) => u.email.toLowerCase() === email && u.password === password
-    );
-
-    if (foundUser) {
-      console.log("Demo user found:", foundUser.role);
-      await new Promise(resolve => setTimeout(resolve, 800));
-      toast.success(`Welcome back, ${foundUser.role}! (Demo Mode)`);
-      localStorage.setItem("demo_user", JSON.stringify(foundUser));
-      router.push(foundUser.role === "admin" ? "/admin" : "/dashboard");
-      return;
-    }
-
-    // 2. Bypass Supabase if it's not configured (using placeholder)
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const isPlaceholder = !supabaseUrl || supabaseUrl.includes("placeholder");
-
-    if (isPlaceholder) {
-      console.warn("Supabase is not configured. Demo login only.");
-      toast.error("Invalid demo credentials. Please check userdata.json or adminlogin.json");
-      setIsLoading(false);
-      return;
-    }
-
-    // 3. Fallback to Supabase ONLY if configured and not a demo user
+    // 1. Fallback to Supabase ONLY
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email: values.email,
         password: values.password,
       });
 
-      if (!error) {
-        toast.success("Logged in successfully!");
-        router.push("/dashboard");
+      if (error) {
+        toast.error(error.message || "Invalid credentials");
+        setIsLoading(false);
         return;
       }
 
-      toast.error(error.message || "Invalid credentials");
+      // Check user role
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', data.user.id)
+        .single();
+
+      toast.success("Logged in successfully!");
+      
+      if (profile?.role === 'admin') {
+        router.push("/admin");
+      } else {
+        router.push("/dashboard");
+      }
     } catch (err) {
       console.error("Supabase connection error:", err);
       toast.error("Authentication server unreachable.");
-    } finally {
       setIsLoading(false);
     }
   }

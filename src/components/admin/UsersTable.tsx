@@ -20,11 +20,11 @@ import {
 
 interface UserData {
   id: string;
-  name: string;
+  full_name: string;
   email: string;
   role: string;
   status: string;
-  joined_at: string;
+  created_at: string;
 }
 
 interface UsersTableProps {
@@ -82,14 +82,14 @@ export default function UsersTable({ users }: UsersTableProps) {
               <TableRow key={user.id} className="border-white/5 hover:bg-white/5 transition-colors group">
                 <TableCell>
                   <div className="flex flex-col">
-                    <span className="font-medium text-text-primary">{user.name}</span>
+                    <span className="font-medium text-text-primary">{user.full_name}</span>
                     <span className="text-xs text-text-muted">{user.email}</span>
                   </div>
                 </TableCell>
                 <TableCell>{getRoleBadge(user.role)}</TableCell>
                 <TableCell>{getStatusBadge(user.status)}</TableCell>
                 <TableCell className="text-text-muted text-xs">
-                  {new Date(user.joined_at).toLocaleDateString()}
+                  {new Date(user.created_at).toLocaleDateString()}
                 </TableCell>
                 <TableCell className="text-right">
                   <DropdownMenu>

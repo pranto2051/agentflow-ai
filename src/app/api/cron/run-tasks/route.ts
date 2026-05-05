@@ -3,13 +3,18 @@ import { createClient } from "@supabase/supabase-js";
 import { geminiModel } from "@/lib/gemini/client";
 import { generateLinkedInPost } from "@/lib/gemini/prompts";
 
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
 // We use the service role key here because this is a background process
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+const supabaseAdmin = (supabaseUrl && serviceRoleKey) 
+  ? createClient(supabaseUrl, serviceRoleKey)
+  : null;
 
 export async function GET(request: Request) {
+  if (!supabaseAdmin) {
+    return NextResponse.json({ error: "Supabase not configured" }, { status: 500 });
+  }
   const authHeader = request.headers.get("authorization");
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return new Response("Unauthorized", { status: 401 });
