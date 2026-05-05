@@ -1,0 +1,29 @@
+[
+  {
+    "id": "t1",
+    "title": "Social Media Auto-Post",
+    "task_type": "automation",
+    "platform": "Twitter/X",
+    "status": "active",
+    "last_run": "2024-05-03T12:00:00Z",
+    "created_at": "2024-04-01T09:00:00Z"
+  },
+  {
+    "id": "t2",
+    "title": "Email Scraper",
+    "task_type": "scraping",
+    "platform": "Web",
+    "status": "paused",
+    "last_run": null,
+    "created_at": "2024-04-15T15:00:00Z"
+  },
+  {
+    "id": "t3",
+    "title": "Data Cleanup",
+    "task_type": "maintenance",
+    "platform": "Database",
+    "status": "completed",
+    "last_run": "2024-05-02T18:00:00Z",
+    "created_at": "2024-04-20T10:00:00Z"
+  }
+]

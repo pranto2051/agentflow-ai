@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "insforge": {
+      "source": "insforge/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/insforge/SKILL.md",
+      "computedHash": "5dcb24bd60ea17cb12cd42074845ac60925a1fab13860125d9fa656484e9c3c3"
+    },
+    "insforge-cli": {
+      "source": "insforge/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/insforge-cli/SKILL.md",
+      "computedHash": "f62ba98dc8b972db206a876085101f1a7a829404ee147f65a72716815960ab90"
+    }
+  }
+}
