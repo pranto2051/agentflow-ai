@@ -235,6 +235,25 @@
 }
 .admin-card:hover::before { opacity: 0.6; }
 
+/* Dashboard Card (User) */
+.dash-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-lg);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 200ms ease, background 200ms ease;
+}
+.dash-card:hover { border-color: var(--border-soft); }
+.dash-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--violet), transparent);
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+.dash-card:hover::before { opacity: 0.5; }
+
 /* Section Header */
 .section-header {
   display: flex;
