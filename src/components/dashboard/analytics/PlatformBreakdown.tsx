@@ -9,6 +9,7 @@ interface PlatformBreakdownProps {
 }
 
 export function PlatformBreakdown({ data }: PlatformBreakdownProps) {
+  if (!data) return null;
   
   const chartData = [
     { name: 'LinkedIn', value: data.linkedin, color: '#0a66c2' },

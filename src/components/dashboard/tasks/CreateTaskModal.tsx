@@ -2,15 +2,15 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Calendar, Clock, Globe, Zap, ArrowRight, ArrowLeft } from 'lucide-react';
+import { X, Calendar, Clock, Globe, Zap, ArrowRight, ArrowLeft, CheckCircle2, Sparkles } from 'lucide-react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { scaleIn, fadeIn } from '@/lib/animations/dashboard';
 
 const taskSchema = z.object({
-  title: z.string().min(3, "Title must be at least 3 characters").max(100),
-  description: z.string().min(10, "Description must be at least 10 characters").max(2000),
+  title: z.string().min(1, "Title is required").max(100),
+  description: z.string().min(1, "Description is required").max(2000),
   tone: z.string().min(1),
   task_type: z.enum(['daily', 'weekly', 'monthly', 'one-time']),
   schedule_time: z.string(),
